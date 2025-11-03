@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Console Extension Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .instructions {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .keyboard-shortcut {
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 TurboWarp Developer Console Extension - Test Page</h1>
+        
+        <div class="instructions">
+            <h3>How to Test This Extension</h3>
+            <ol>
+                <li>Open TurboWarp at <a href="https://turbowarp.org/" target="_blank">https://turbowarp.org/</a></li>
+                <li>Click on "Extensions" in the bottom left corner</li>
+                <li>Select "Load Extension from URL" or "Load Extension from File"</li>
+                <li>If using URL: Enter the hosted URL of <code>developer-console.js</code></li>
+                <li>If using File: Select the <code>developer-console.js</code> file from this project</li>
+                <li>The extension will load and appear in your blocks palette</li>
+            </ol>
+        </div>
+
+        <h2>🎯 Features to Test</h2>
+        <ul class="feature-list">
+            <li>Console toggle with <span class="keyboard-shortcut">~</span> key</li>
+            <li>Console close with <span class="keyboard-shortcut">Escape</span> key</li>
+            <li>Text input field with cursor</li>
+            <li>Command registration via blocks</li>
+            <li>Command execution with arguments</li>
+            <li>Autocomplete dropdown with strict prefix matching</li>
+            <li>Autocomplete navigation with arrow keys</li>
+            <li>Tab/Enter to accept autocomplete suggestions</li>
+            <li>Command history navigation with up/down arrows</li>
+            <li>Output display with normal and error messages</li>
+            <li>Console styling customization blocks</li>
+            <li>Custom CSS support</li>
+        </ul>
+
+        <h2>⌨️ Keyboard Shortcuts</h2>
+        <div class="code-block">
+~ (Tilde)         - Toggle console open/closed
+Escape            - Close console (when open)
+Enter             - Execute command or accept autocomplete
+Tab               - Accept autocomplete suggestion
+Up Arrow          - Previous command in history OR navigate autocomplete up
+Down Arrow        - Next command in history OR navigate autocomplete down
+        </div>
+
+        <h2>🧪 Test Scenario: Basic Setup</h2>
+        <div class="info-box">
+            <h4>Step 1: Create a New Project in TurboWarp</h4>
+            <p>Start with a blank project and load the Developer Console extension.</p>
+        </div>
+
+        <div class="info-box">
+            <h4>Step 2: Add Command Registration</h4>
+            <p>Add this to your sprite's "when green flag clicked" script:</p>
+            <div class="code-block">
+when green flag clicked
+register command [help] with description [Show available commands]
+register command [test] with description [Test command]
+register command [echo] with description [Echo back the message]
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h4>Step 3: Add Command Handlers</h4>
+            <p>Create these hat blocks for your commands:</p>
+            <div class="code-block">
+when command [help] executed
+add output [Available commands:] to console
+add output [- help: Show this message] to console
+add output [- test: Test command] to console
+add output [- echo &lt;message&gt;: Echo a message] to console
+
+when command [test] executed
+add output [Test successful!] to console
+
+when command [echo] executed
+set [args] to (command arguments)
+add output (args) to console
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h4>Step 4: Customize Appearance (Optional)</h4>
+            <p>Add styling blocks after command registration:</p>
+            <div class="code-block">
+set console background to [#000000] with opacity [90]%
+set console text color to [#00ff00]
+set console font to [Courier New] size [16]px
+set console border [solid] [2]px color [#00ff00]
+set console position [bottom] with padding [20]px
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h4>Step 5: Test the Console</h4>
+            <ol>
+                <li>Click the green flag to start the project</li>
+                <li>Press <span class="keyboard-shortcut">~</span> to open the console</li>
+                <li>Type "help" and press Enter</li>
+                <li>Try typing "t" and watch autocomplete suggestions appear</li>
+                <li>Use arrow keys to navigate suggestions</li>
+                <li>Press Tab or Enter to accept a suggestion</li>
+                <li>Try the "test" and "echo hello world" commands</li>
+            </ol>
+        </div>
+
+        <h2>✅ Acceptance Criteria Checklist</h2>
+        <ul class="feature-list">
+            <li>Extension loads in TurboWarp without errors</li>
+            <li>Console opens/closes with ~ key</li>
+            <li>Developer can register commands using blocks</li>
+            <li>Commands execute and trigger appropriate handler blocks</li>
+            <li>Autocomplete shows matching commands as user types</li>
+            <li>Styling blocks successfully customize console appearance</li>
+            <li>Console overlays properly on stage without breaking project execution</li>
+            <li>Multiple commands can be registered and executed in sequence</li>
+            <li>Arguments are correctly parsed and passed to command handlers</li>
+            <li>Output messages display in console with proper formatting</li>
+        </ul>
+
+        <h2>🔍 Troubleshooting</h2>
+        <div class="warning-box">
+            <h4>Console doesn't open with ~ key</h4>
+            <ul>
+                <li>Make sure the TurboWarp stage has focus (click on it first)</li>
+                <li>Check browser console for JavaScript errors</li>
+                <li>Verify the extension loaded successfully</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>Commands not executing</h4>
+            <ul>
+                <li>Ensure commands are registered before trying to execute them</li>
+                <li>Check that command names match exactly (case-sensitive)</li>
+                <li>Verify hat blocks exist for the commands you're trying to execute</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>Styling not applying</h4>
+            <ul>
+                <li>Make sure styling blocks are executed (add them to "when green flag clicked")</li>
+                <li>Try opening and closing the console to see changes</li>
+                <li>Check that color values are valid hex codes</li>
+            </ul>
+        </div>
+
+        <h2>📚 Additional Resources</h2>
+        <ul>
+            <li><a href="README.md">README.md</a> - Full documentation</li>
+            <li><a href="example-usage.md">example-usage.md</a> - Detailed usage examples</li>
+            <li><a href="https://turbowarp.org/" target="_blank">TurboWarp Official Site</a></li>
+            <li><a href="https://docs.turbowarp.org/development/extensions/introduction" target="_blank">TurboWarp Extension Documentation</a></li>
+        </ul>
+
+        <h2>🐛 Reporting Issues</h2>
+        <p>If you encounter any bugs or have feature requests, please report them with the following information:</p>
+        <ul>
+            <li>Browser and version</li>
+            <li>TurboWarp version (if available)</li>
+            <li>Steps to reproduce the issue</li>
+            <li>Expected behavior vs actual behavior</li>
+            <li>Console errors (if any)</li>
+        </ul>
+    </div>
+</body>
+</html>
