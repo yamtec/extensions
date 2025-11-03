@@ -5,9 +5,11 @@ A comprehensive TurboWarp extension for displaying customizable tooltips with ad
 ## Features
 
 - **Multiple Display Modes**: Fixed positioning, cursor following, cursor following with custom offset
-- **Full Markdown Support**: Headers, bold, italic, strikethrough, code blocks, lists, links
+- **Full Markdown Support**: Headers, bold, italic, strikethrough, code blocks, lists, links, images
+- **Image Support**: Display block images, inline images (emoji-style), clickable images with links
+- **Inline Images**: Use `{img:url}` syntax to add emoji-style images within text
 - **Custom Color Syntax**: `{color:red}colored text{/color}` or `{color:#FF5733}hex colors{/color}`
-- **Extensive Styling Options**: Fonts, colors, borders, shadows, opacity, sizing
+- **Extensive Styling Options**: Fonts, colors, borders, shadows, opacity, sizing, image sizing
 - **Smooth Animations**: Configurable fade in/out effects
 - **Auto-hide**: Optional automatic hiding with customizable duration
 - **Smart Positioning**: Tooltips stay within viewport bounds
@@ -168,6 +170,40 @@ Set the maximum width in pixels. Default: 300.
 set tooltip max width to [400]px
 ```
 
+### Styling - Images
+
+#### `set tooltip image max width to [WIDTH]px`
+Set the maximum width for images in pixels. Use 0 for auto/no limit. Default: 0.
+
+**Example:**
+```
+set tooltip image max width to [200]px
+```
+
+#### `set tooltip image max height to [HEIGHT]px`
+Set the maximum height for images in pixels. Use 0 for auto/no limit. Default: 0.
+
+**Example:**
+```
+set tooltip image max height to [150]px
+```
+
+#### `set tooltip image border radius to [RADIUS]px`
+Set the border radius for block images (rounded corners). Default: 4.
+
+**Example:**
+```
+set tooltip image border radius to [8]px
+```
+
+#### `set tooltip inline image size to [SIZE]px`
+Set the size (height) for inline images in pixels. Width scales automatically. Default: 20.
+
+**Example:**
+```
+set tooltip inline image size to [24]px
+```
+
 ### Styling - Shadow
 
 #### `set tooltip shadow [ENABLED]`
@@ -321,6 +357,34 @@ The tooltip extension supports full markdown formatting:
 ```
 Links are clickable and open in a new tab.
 
+### Block Images
+```
+![Alt text](https://example.com/image.png)
+```
+Display images as centered blocks within tooltips. The alt text will be used as the tooltip for the image.
+
+### Inline Images (Emoji-Style)
+```
+{img:https://example.com/icon.png}
+```
+Display small images inline with text, like emojis. You can also provide alt text:
+```
+{img:https://example.com/icon.png:Icon description}
+```
+
+**Examples:**
+```
+Hello {img:https://example.com/wave.png} how are you?
+I love {img:https://example.com/heart.png:heart} this feature!
+Click here {img:https://example.com/arrow.png} to continue
+```
+
+### Images with Links
+```
+[![Alt text](https://example.com/image.png)](https://example.com)
+```
+Make images clickable by wrapping them in a link. Clicking the image will open the link in a new tab.
+
 ### Custom Color Syntax
 Use the custom color syntax to add colored text:
 ```
@@ -450,6 +514,88 @@ This tooltip uses a web font!] at x: [0] y: [0]
 
 **Tip:** While the dropdown shows common fonts, you can type any CSS font-family value directly into the font field!
 
+### Example 9: Image Tooltip
+```
+When green flag clicked
+set tooltip image max width to [150]px
+set tooltip background color to [#1a1a1a]
+set tooltip text color to [#ffffff]
+show tooltip [# Character Info
+
+![Character Avatar](https://example.com/avatar.png)
+
+**Name:** Hero
+**Level:** 25
+**HP:** 100/100] at x: [0] y: [0]
+```
+
+### Example 10: Clickable Image Tooltip
+```
+When this sprite clicked
+set tooltip image max width to [200]px
+set tooltip image border radius to [10]px
+show tooltip [## Click to Visit
+
+[![Website Logo](https://example.com/logo.png)](https://example.com)
+
+*Click the image to visit our website*] following cursor
+```
+
+### Example 11: Image Gallery Tooltip
+```
+When green flag clicked
+set tooltip image max width to [120]px
+set tooltip max width to [400]px
+show tooltip [## Item Gallery
+
+![Sword](https://example.com/sword.png)
+![Shield](https://example.com/shield.png)
+![Potion](https://example.com/potion.png)
+
+*Hover over items for more info*] at x: [0] y: [100]
+```
+
+### Example 12: Inline Images in Text
+```
+When green flag clicked
+set tooltip inline image size to [20]px
+show tooltip [Welcome {img:https://example.com/wave.png} to the game!
+
+Press {img:https://example.com/space-key.png} to jump
+Use {img:https://example.com/arrow-keys.png} to move
+
+Good luck {img:https://example.com/thumbs-up.png}!] at x: [0] y: [0]
+```
+
+### Example 13: Status Indicators
+```
+When this sprite clicked
+set tooltip inline image size to [16]px
+show tooltip [## Player Status
+
+{img:https://example.com/health.png} HP: 100/100
+{img:https://example.com/mana.png} Mana: 75/100
+{img:https://example.com/gold.png} Gold: 500
+
+{img:https://example.com/checkmark.png} Quest Complete!] following cursor
+```
+
+### Example 14: Mixed Images
+```
+When green flag clicked
+set tooltip image max width to [150]px
+set tooltip inline image size to [18]px
+show tooltip [# Character Profile
+
+![Avatar](https://example.com/avatar.png)
+
+**Name:** Hero {img:https://example.com/star.png}
+**Level:** 25 {img:https://example.com/level-up.png}
+**Status:** Online {img:https://example.com/online.png}
+
+*Click to view details*] at x: [0] y: [0]
+```
+
 ## Technical Details
 
 - **Extension ID:** `tooltips`
@@ -494,6 +640,12 @@ Works in all modern browsers that support TurboWarp:
 6. **Consider tooltip width**: Set max-width appropriately for your content
 7. **Use cursor offset**: Add offset when following cursor to prevent blocking the pointer
 8. **Custom fonts**: Click on the font field and type any CSS font-family - not limited to dropdown options!
+9. **Image sizing**: Use image max width/height to control block image dimensions. Set to 0 for no limit
+10. **Clickable images**: Wrap images in links to make them clickable: `[![alt](image.png)](link.com)`
+11. **Image tooltips**: The alt text of images serves as the native HTML tooltip when hovering over the image
+12. **Inline images**: Use `{img:url}` for emoji-style inline images within text
+13. **Inline image size**: Adjust inline image size with the block (default 20px) - great for icons and emojis
+14. **Mix image types**: You can use both block images `![alt](url)` and inline images `{img:url}` in the same tooltip
 
 ## Troubleshooting
 
@@ -516,6 +668,17 @@ Works in all modern browsers that support TurboWarp:
 - This is normal throttling for performance
 - The tooltip updates at ~60fps
 - Adjust offset if needed
+
+**Images not displaying:**
+- Verify the image URL is correct and accessible
+- Check browser console for CORS or loading errors
+- Ensure the image format is supported (PNG, JPG, GIF, SVG, etc.)
+- Try using a direct image URL (ending in .png, .jpg, etc.)
+
+**Images too large/small:**
+- Use `set tooltip image max width` and `set tooltip image max height` blocks
+- Set to 0 for no limit, or specific pixel values to constrain size
+- Images maintain aspect ratio automatically
 
 ## License
 

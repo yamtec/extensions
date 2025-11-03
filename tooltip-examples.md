@@ -390,6 +390,143 @@ Visit our website for:
 {color:blue}*Links open in new tab*{/color}] at x: [0] y: [0]
 ```
 
+### Example 17: Image with Tooltip Text
+
+Display an image alongside descriptive text:
+
+```scratch
+When sprite clicked
+set tooltip image max width to [150]px
+set tooltip image border radius to [8]px
+set tooltip background color to [#1a1a1a]
+set tooltip text color to [#ffffff]
+show tooltip [# Character Info
+
+![Hero Avatar](https://example.com/hero.png)
+
+**Name:** Brave Hero
+**Level:** 25
+**HP:** 100/100
+**Mana:** 75/100
+
+*Click to view full stats*] at x: [0] y: [0]
+```
+
+### Example 18: Clickable Image Gallery
+
+Create an interactive image gallery tooltip:
+
+```scratch
+When this sprite clicked
+set tooltip image max width to [120]px
+set tooltip max width to [400]px
+show tooltip [## Item Shop
+
+[![Sword](https://example.com/sword.png)](https://example.com/buy/sword)
+[![Shield](https://example.com/shield.png)](https://example.com/buy/shield)
+[![Potion](https://example.com/potion.png)](https://example.com/buy/potion)
+
+*Click any item to purchase*] following cursor
+```
+
+### Example 19: Profile Card with Image
+
+Show a profile card with an avatar image:
+
+```scratch
+When green flag clicked
+set tooltip image max width to [100]px
+set tooltip image border radius to [50]px // Makes image circular
+set tooltip background color to [#2c3e50]
+set tooltip text color to [#ecf0f1]
+set tooltip border color to [#3498db]
+set tooltip border width to [2]px
+show tooltip [![Profile Picture](https://example.com/avatar.png)
+
+## John Doe
+**Developer**
+
+*Building amazing projects!*
+
+[Visit Profile](https://example.com/profile)] at x: [0] y: [100]
+```
+
+### Example 20: Tutorial Step with Illustration
+
+Create tutorial steps with helpful images:
+
+```scratch
+When green flag clicked
+set [step] to [1]
+
+When [step] = [1]
+set tooltip image max width to [200]px
+show tooltip [## Tutorial: Step 1
+
+![Arrow Keys](https://example.com/arrow-keys.png)
+
+Use **arrow keys** to move your character.
+
+Press `Space` to continue] at x: [0] y: [80]
+
+When [space v] key pressed
+if <[step] = [1]> then
+  change [step] by [1]
+  hide tooltip
+  // Show next step...
+end
+```
+
+### Example 21: Inline Icons in Notifications
+
+Use inline images as icons within text:
+
+```scratch
+When [score] > [100]
+set tooltip inline image size to [18]px
+set tooltip auto-hide to [enabled]
+set tooltip auto-hide duration to [3] seconds
+show tooltip [{img:https://example.com/trophy.png} Achievement Unlocked!
+
+{img:https://example.com/star.png} Score Master
+
+You scored over 100 points! {img:https://example.com/party.png}] at x: [0] y: [100]
+```
+
+### Example 22: Status Bar with Icons
+
+Create a status display with inline icons:
+
+```scratch
+When green flag clicked
+set tooltip inline image size to [16]px
+forever
+  show tooltip [**Player Status:**
+
+  {img:https://example.com/heart.png} HP: (join (HP) [ / 100])
+  {img:https://example.com/shield.png} Defense: (Defense)
+  {img:https://example.com/sword.png} Attack: (Attack)
+  {img:https://example.com/speed.png} Speed: (Speed)] following cursor with offset x: [10] y: [10]
+  wait [0.5] seconds
+end
+```
+
+### Example 23: Interactive Help with Inline Images
+
+Show helpful tips with inline icons:
+
+```scratch
+When this sprite clicked
+set tooltip inline image size to [20]px
+show tooltip [## Controls {img:https://example.com/gamepad.png}
+
+{img:https://example.com/up.png} Jump
+{img:https://example.com/left.png}{img:https://example.com/right.png} Move
+{img:https://example.com/action.png} Attack
+
+*Tip:* Hold {img:https://example.com/shift.png} to run faster!] at x: [0] y: [0]
+```
+
 ---
 
 ## Tips for Best Results
@@ -404,6 +541,13 @@ Visit our website for:
 8. **Limit Width**: Set max-width to prevent extremely wide tooltips
 9. **Use Fade Animations**: Enable fade animations for smooth, professional appearance
 10. **Clean Up**: Always hide tooltips when they're no longer needed
+11. **Image Sizing**: Set image max width/height before showing tooltip to control block image dimensions
+12. **Clickable Images**: Wrap images in links `[![alt](img.png)](url)` for interactive image tooltips
+13. **Image Alt Text**: Always provide descriptive alt text for images (shows on hover)
+14. **Circular Images**: Use high border radius (50px+) for circular avatar images
+15. **Inline Images**: Use `{img:url}` or `{img:url:alt}` for emoji-style images within text
+16. **Inline Size**: Set inline image size (default 20px) before showing - perfect for icons (12-24px range)
+17. **Mix Image Types**: Combine block images `![](url)` and inline images `{img:url}` in same tooltip
 
 ---
 
@@ -439,6 +583,17 @@ Visit our website for:
 - Check background opacity setting
 - Verify text color contrasts with background
 
+**Images not displaying:**
+- Verify image URL is correct and accessible
+- Check browser console for CORS errors
+- Ensure image format is supported (PNG, JPG, GIF, SVG)
+- Try using direct image URLs (ending in .png, .jpg, etc.)
+
+**Images too large:**
+- Use `set tooltip image max width to [px]` before showing tooltip
+- Use `set tooltip image max height to [px]` to constrain height
+- Images automatically maintain aspect ratio
+
 ---
 
-Happy tooltip creating! 🎨
+Happy tooltip creating! 🎨✨
