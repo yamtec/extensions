@@ -188,6 +188,7 @@
             <button class="test-button" onclick="testImageBasic()">Basic Image</button>
             <button class="test-button" onclick="testImageWithText()">Image with Text</button>
             <button class="test-button" onclick="testImageWithLink()">Clickable Image</button>
+            <button class="test-button" onclick="testInlineImages()">Inline Images</button>
         </div>
 
         <div class="example">
@@ -261,6 +262,17 @@ show tooltip [## Visit Us!
 
 *Click to visit*] at x: [0] y: [0]</code></pre>
         </div>
+
+        <div class="example">
+            <h3>Example 7: Inline Images</h3>
+            <pre><code>set tooltip inline image size to [20]px
+show tooltip [Welcome {img:wave.png} to the game!
+
+Press {img:space.png} to jump
+Use {img:arrows.png} to move
+
+Good luck {img:thumbs-up.png}!] at x: [0] y: [0]</code></pre>
+        </div>
     </div>
 
     <div class="section">
@@ -319,6 +331,7 @@ show tooltip [## Visit Us!
                     <li>set image max width to [px]</li>
                     <li>set image max height to [px]</li>
                     <li>set image border radius to [px]</li>
+                    <li>set inline image size to [px]</li>
                 </ul>
             </div>
             
@@ -538,6 +551,17 @@ show tooltip [## Visit Us!
             tooltipExtension.setImageBorderRadius({ RADIUS: 10 });
             tooltipExtension.showTooltipAtPosition({
                 TEXT: '## Click the Image!\n\n[![Logo](https://scratch.mit.edu/images/logo_sm.png)](https://scratch.mit.edu)\n\n*Click to visit Scratch*',
+                X: 0,
+                Y: 0
+            });
+        }
+
+        function testInlineImages() {
+            tooltipExtension.setInlineImageSize({ SIZE: 20 });
+            tooltipExtension.showTooltipAtPosition({
+                TEXT: 'Welcome {img:https://scratch.mit.edu/images/logo_sm.png:Scratch} to the demo!\n\n' +
+                      'This shows {img:https://via.placeholder.com/20/ff0000/ffffff?text=1:Icon 1} inline {img:https://via.placeholder.com/20/00ff00/ffffff?text=2:Icon 2} images!\n\n' +
+                      'They work like emojis {img:https://via.placeholder.com/20/0000ff/ffffff?text=3:Icon 3} in text.',
                 X: 0,
                 Y: 0
             });

@@ -9,22 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added - Tooltips Extension
 - **Image Support**:
-  - Display images inline using markdown syntax: `![alt text](image_url)`
+  - Display block images using markdown syntax: `![alt text](image_url)`
+  - Inline images (emoji-style) using custom syntax: `{img:url}` or `{img:url:alt}`
   - Clickable images with links: `[![alt](image.png)](link.com)`
   - Images open in new tab when clicked (if wrapped in link)
   - Native HTML tooltip shows alt text on hover
 - **Image Styling Blocks**:
-  - `set tooltip image max width to [WIDTH]px` - Control maximum image width (0 = auto)
-  - `set tooltip image max height to [HEIGHT]px` - Control maximum image height (0 = auto)
-  - `set tooltip image border radius to [RADIUS]px` - Rounded corners for images (default: 4px)
+  - `set tooltip image max width to [WIDTH]px` - Control maximum width for block images (0 = auto)
+  - `set tooltip image max height to [HEIGHT]px` - Control maximum height for block images (0 = auto)
+  - `set tooltip image border radius to [RADIUS]px` - Rounded corners for block images (default: 4px)
+  - `set tooltip inline image size to [SIZE]px` - Control size for inline images (default: 20px)
 - **Image Features**:
-  - Images maintain aspect ratio automatically
-  - Centered display with proper margins
+  - Block images: centered display with proper margins, maintain aspect ratio
+  - Inline images: display inline with text like emojis, sized proportionally
   - Support for all standard image formats (PNG, JPG, GIF, SVG, etc.)
   - Images scale responsively within tooltip constraints
+  - Mix block and inline images in the same tooltip
 - **Documentation Updates**:
   - Added image syntax examples to tooltip-README.md
-  - 3 new usage examples showcasing images (Examples 9-11)
+  - 6+ new usage examples showcasing both image types (Examples 9-14, 21-23)
   - Troubleshooting section for image-related issues
   - Updated Tips & Best Practices with image guidance
 

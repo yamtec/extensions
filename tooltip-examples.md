@@ -477,6 +477,56 @@ if <[step] = [1]> then
 end
 ```
 
+### Example 21: Inline Icons in Notifications
+
+Use inline images as icons within text:
+
+```scratch
+When [score] > [100]
+set tooltip inline image size to [18]px
+set tooltip auto-hide to [enabled]
+set tooltip auto-hide duration to [3] seconds
+show tooltip [{img:https://example.com/trophy.png} Achievement Unlocked!
+
+{img:https://example.com/star.png} Score Master
+
+You scored over 100 points! {img:https://example.com/party.png}] at x: [0] y: [100]
+```
+
+### Example 22: Status Bar with Icons
+
+Create a status display with inline icons:
+
+```scratch
+When green flag clicked
+set tooltip inline image size to [16]px
+forever
+  show tooltip [**Player Status:**
+
+  {img:https://example.com/heart.png} HP: (join (HP) [ / 100])
+  {img:https://example.com/shield.png} Defense: (Defense)
+  {img:https://example.com/sword.png} Attack: (Attack)
+  {img:https://example.com/speed.png} Speed: (Speed)] following cursor with offset x: [10] y: [10]
+  wait [0.5] seconds
+end
+```
+
+### Example 23: Interactive Help with Inline Images
+
+Show helpful tips with inline icons:
+
+```scratch
+When this sprite clicked
+set tooltip inline image size to [20]px
+show tooltip [## Controls {img:https://example.com/gamepad.png}
+
+{img:https://example.com/up.png} Jump
+{img:https://example.com/left.png}{img:https://example.com/right.png} Move
+{img:https://example.com/action.png} Attack
+
+*Tip:* Hold {img:https://example.com/shift.png} to run faster!] at x: [0] y: [0]
+```
+
 ---
 
 ## Tips for Best Results
@@ -491,10 +541,13 @@ end
 8. **Limit Width**: Set max-width to prevent extremely wide tooltips
 9. **Use Fade Animations**: Enable fade animations for smooth, professional appearance
 10. **Clean Up**: Always hide tooltips when they're no longer needed
-11. **Image Sizing**: Set image max width/height before showing tooltip to control image dimensions
+11. **Image Sizing**: Set image max width/height before showing tooltip to control block image dimensions
 12. **Clickable Images**: Wrap images in links `[![alt](img.png)](url)` for interactive image tooltips
 13. **Image Alt Text**: Always provide descriptive alt text for images (shows on hover)
 14. **Circular Images**: Use high border radius (50px+) for circular avatar images
+15. **Inline Images**: Use `{img:url}` or `{img:url:alt}` for emoji-style images within text
+16. **Inline Size**: Set inline image size (default 20px) before showing - perfect for icons (12-24px range)
+17. **Mix Image Types**: Combine block images `![](url)` and inline images `{img:url}` in same tooltip
 
 ---
 

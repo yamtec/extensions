@@ -45,9 +45,10 @@
         shadowBlur: 4,
         shadowColor: '#000000',
         zIndex: 10000,
-        imageMaxWidth: 0, // 0 = auto, max width for images
-        imageMaxHeight: 0, // 0 = auto, max height for images
-        imageBorderRadius: 4
+        imageMaxWidth: 0, // 0 = auto, max width for block images
+        imageMaxHeight: 0, // 0 = auto, max height for block images
+        imageBorderRadius: 4,
+        inlineImageSize: 20 // Size for inline images (emoji-style)
       };
       
       // Behavior properties
@@ -155,6 +156,12 @@
       // Process custom color syntax first: {color:colorname}text{/color}
       html = html.replace(/\{color:([^}]+)\}(.*?)\{\/color\}/g, (match, color, content) => {
         return `<span style="color: ${color}">${content}</span>`;
+      });
+      
+      // Process inline images: {img:url} or {img:url:alt}
+      html = html.replace(/\{img:([^:}]+)(?::([^}]*))?\}/g, (match, url, alt) => {
+        const altText = alt || 'inline image';
+        return `<img src="${url}" alt="${altText}" title="${altText}" class="tooltip-inline-image" />`;
       });
       
       // Headers
@@ -304,22 +311,34 @@
       // Style images
       const images = content.querySelectorAll('img');
       images.forEach(img => {
-        img.style.display = 'block';
-        img.style.margin = '8px auto';
-        img.style.borderRadius = `${this.styling.imageBorderRadius}px`;
-        
-        if (this.styling.imageMaxWidth > 0) {
-          img.style.maxWidth = `${this.styling.imageMaxWidth}px`;
+        // Check if it's an inline image
+        if (img.classList.contains('tooltip-inline-image')) {
+          // Inline images (emoji-style)
+          img.style.display = 'inline';
+          img.style.height = `${this.styling.inlineImageSize}px`;
+          img.style.width = 'auto';
+          img.style.verticalAlign = 'middle';
+          img.style.margin = '0 2px';
+          img.style.borderRadius = '0px';
         } else {
-          img.style.maxWidth = '100%';
+          // Block images (regular)
+          img.style.display = 'block';
+          img.style.margin = '8px auto';
+          img.style.borderRadius = `${this.styling.imageBorderRadius}px`;
+          
+          if (this.styling.imageMaxWidth > 0) {
+            img.style.maxWidth = `${this.styling.imageMaxWidth}px`;
+          } else {
+            img.style.maxWidth = '100%';
+          }
+          
+          if (this.styling.imageMaxHeight > 0) {
+            img.style.maxHeight = `${this.styling.imageMaxHeight}px`;
+          }
+          
+          img.style.height = 'auto';
+          img.style.objectFit = 'contain';
         }
-        
-        if (this.styling.imageMaxHeight > 0) {
-          img.style.maxHeight = `${this.styling.imageMaxHeight}px`;
-        }
-        
-        img.style.height = 'auto';
-        img.style.objectFit = 'contain';
       });
     }
 
@@ -602,6 +621,11 @@
       this.renderTooltip();
     }
 
+    setInlineImageSize(args) {
+      this.styling.inlineImageSize = Math.max(1, Number(args.SIZE));
+      this.renderTooltip();
+    }
+
     // Reporter blocks
     isVisible() {
       return this.isVisible;
@@ -878,6 +902,17 @@
               RADIUS: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 4
+              }
+            }
+          },
+          {
+            opcode: 'setInlineImageSize',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set tooltip inline image size to [SIZE]px',
+            arguments: {
+              SIZE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 20
               }
             }
           },

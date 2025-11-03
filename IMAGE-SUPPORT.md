@@ -2,18 +2,37 @@
 
 ## Overview
 
-The Tooltips Extension now supports displaying images within tooltips using standard markdown syntax, with additional support for clickable images that link to URLs.
+The Tooltips Extension supports two types of images:
+1. **Block Images** - Using standard markdown syntax for centered, large images
+2. **Inline Images** - Using custom syntax for emoji-style images within text
 
 ## Features
 
-### Basic Image Display
-Use standard markdown syntax to display images:
+### Block Image Display
+Use standard markdown syntax to display centered block images:
 ```
 ![Alt text](https://example.com/image.png)
 ```
 
+### Inline Images (Emoji-Style)
+Use custom syntax to display small images inline with text:
+```
+{img:https://example.com/icon.png}
+```
+With optional alt text:
+```
+{img:https://example.com/icon.png:Description}
+```
+
+**Examples:**
+```
+Hello {img:wave.png} how are you?
+I love {img:heart.png:heart} coding!
+Press {img:space.png} to jump
+```
+
 ### Clickable Images
-Wrap images in markdown links to make them clickable:
+Wrap block images in markdown links to make them clickable:
 ```
 [![Alt text](https://example.com/image.png)](https://example.com/link)
 ```
@@ -22,22 +41,28 @@ Wrap images in markdown links to make them clickable:
 
 ### Image Styling Blocks
 
-Three new blocks for controlling image appearance:
+Four blocks for controlling image appearance:
 
 1. **`set tooltip image max width to [WIDTH]px`**
-   - Controls the maximum width of images in pixels
+   - Controls the maximum width of block images in pixels
    - Set to 0 for auto/no limit (default)
    - Images scale proportionally
 
 2. **`set tooltip image max height to [HEIGHT]px`**
-   - Controls the maximum height of images in pixels
+   - Controls the maximum height of block images in pixels
    - Set to 0 for auto/no limit (default)
    - Images scale proportionally
 
 3. **`set tooltip image border radius to [RADIUS]px`**
-   - Controls the border radius (rounded corners) of images
+   - Controls the border radius (rounded corners) of block images
    - Default: 4px
    - Use 50px+ for circular images (great for avatars)
+
+4. **`set tooltip inline image size to [SIZE]px`**
+   - Controls the height of inline images in pixels
+   - Width scales automatically to maintain aspect ratio
+   - Default: 20px
+   - Recommended range: 12-24px for most use cases
 
 ## Examples
 
@@ -91,13 +116,61 @@ show tooltip [## Item Shop
 *Available items*] at x: [0] y: [0]
 ```
 
+### Example 5: Inline Images in Text
+```scratch
+When green flag clicked
+set tooltip inline image size to [20]px
+show tooltip [Welcome {img:https://example.com/wave.png} to the game!
+
+Press {img:https://example.com/space.png:Space bar} to jump
+Use {img:https://example.com/arrows.png:Arrow keys} to move
+
+Good luck {img:https://example.com/thumbs-up.png}!] at x: [0] y: [0]
+```
+
+### Example 6: Status Bar with Icons
+```scratch
+When this sprite clicked
+set tooltip inline image size to [16]px
+show tooltip [## Player Stats
+
+{img:https://example.com/heart.png} HP: 100/100
+{img:https://example.com/mana.png} Mana: 75/100
+{img:https://example.com/gold.png} Gold: 500
+
+{img:https://example.com/check.png} Quest Complete!] following cursor
+```
+
+### Example 7: Mixed Block and Inline Images
+```scratch
+When sprite clicked
+set tooltip image max width to [150]px
+set tooltip inline image size to [18]px
+show tooltip [# Hero Profile
+
+![Avatar](https://example.com/hero-avatar.png)
+
+**Name:** Hero {img:https://example.com/star.png}
+**Level:** 25 {img:https://example.com/level-up.png}
+**Status:** Online {img:https://example.com/online.png}] at x: [0] y: [0]
+```
+
 ## Technical Details
 
-### Image Rendering
-- Images are displayed as block elements, centered within the tooltip
+### Block Image Rendering
+- Block images are displayed as centered block elements
 - Images maintain their aspect ratio automatically
 - `object-fit: contain` ensures images scale properly
 - Images have 8px top and bottom margins for spacing
+- Controlled by max-width, max-height, and border-radius settings
+
+### Inline Image Rendering
+- Inline images display inline with text (like emojis)
+- Height is set by `inline image size` setting (default 20px)
+- Width scales automatically to maintain aspect ratio
+- Vertically aligned to middle of text line
+- 2px left and right margins for spacing
+- No border radius applied (displays as-is)
 
 ### Alt Text
 - Alt text is used for accessibility
@@ -118,14 +191,24 @@ show tooltip [## Item Shop
 
 ## Best Practices
 
-1. **Set image sizing before showing tooltip** - Call image styling blocks before showing the tooltip
+### Block Images
+1. **Set sizing before showing** - Call image styling blocks before showing the tooltip
 2. **Use descriptive alt text** - Always provide meaningful alt text for images
-3. **Consider image dimensions** - Pre-size images appropriately to avoid large downloads
-4. **Test image URLs** - Ensure images are publicly accessible
-5. **CORS considerations** - Some images may be blocked by CORS policies
-6. **Optimize images** - Use compressed/optimized images for better performance
-7. **Fallback content** - Include text content alongside images
-8. **Circular avatars** - Use border-radius of 50px or higher for circular profile pictures
+3. **Consider dimensions** - Pre-size images appropriately to avoid large downloads
+4. **Circular avatars** - Use border-radius of 50px or higher for circular profile pictures
+
+### Inline Images
+5. **Keep them small** - Use small icon/emoji images (typically 16-24px height)
+6. **Consistent sizing** - Set inline image size once per tooltip for visual consistency
+7. **Use for icons** - Perfect for status indicators, controls, and emoji-like graphics
+8. **Alt text optional** - Use `{img:url:alt}` syntax if needed, but often not necessary for icons
+
+### General
+9. **Test image URLs** - Ensure images are publicly accessible
+10. **CORS considerations** - Some images may be blocked by CORS policies
+11. **Optimize images** - Use compressed/optimized images for better performance
+12. **Fallback content** - Include text content alongside images
+13. **Mix types** - Combine block and inline images for rich tooltips
 
 ## Troubleshooting
 
@@ -150,34 +233,56 @@ show tooltip [## Item Shop
 - Check that brackets are properly nested
 - Ensure the URL includes protocol (https://)
 
-## Markdown Syntax Reference
+## Syntax Reference
 
-### Simple image:
+### Block Images (Markdown)
+
+**Simple block image:**
 ```
 ![Alt text](image-url)
 ```
 
-### Image with link (clickable):
+**Clickable block image:**
 ```
 [![Alt text](image-url)](link-url)
 ```
 
-### Multiple images:
+**Multiple block images:**
 ```
 ![Image 1](url1)
 ![Image 2](url2)
 ![Image 3](url3)
 ```
 
-### Image with text:
+### Inline Images (Custom Syntax)
+
+**Simple inline image:**
 ```
-# Title
+{img:image-url}
+```
 
-![Image](url)
+**Inline image with alt text:**
+```
+{img:image-url:Alt description}
+```
 
-**Description:** Some text here
+**Multiple inline images in text:**
+```
+Hello {img:wave.png} how are you {img:smile.png}?
+```
+
+### Mixed Usage
+
+**Block image with inline icons:**
+```
+# Profile
+
+![Avatar](avatar.png)
+
+**Status:** {img:online.png} Online
+**Level:** 25 {img:star.png}
 ```
 
 ## Version History
 
-- **v1.2.0** - Added image support with markdown syntax, clickable images, and image styling blocks
+- **v1.2.0** - Added block and inline image support with markdown and custom syntax, clickable images, and image styling blocks
