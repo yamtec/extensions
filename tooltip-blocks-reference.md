@@ -29,24 +29,21 @@ Quick reference guide for all available blocks in the TurboWarp Tooltips Extensi
 
 | Block | Description | Default |
 |-------|-------------|---------|
-| `set tooltip font to [FONT]` | Set font family from dropdown | Arial |
+| `set tooltip font to [FONT]` | Set font family (dropdown or type custom) | Arial |
 | `set tooltip font size to [SIZE]` | Set font size in pixels | 14 |
 | `set tooltip text color to [COLOR]` | Set text color (color picker) | #ffffff |
 
-**Available Fonts:**
-- Arial
-- Helvetica
-- Times New Roman
-- Courier
-- Courier New
-- Verdana
-- Georgia
-- Comic Sans MS
-- Trebuchet MS
-- Impact
-- monospace
-- sans-serif
-- serif
+**Font Input:**
+- **Dropdown provides common fonts** (Arial, Helvetica, Times New Roman, Courier, etc.)
+- **You can type ANY CSS font-family value** directly into the field
+- Supports web fonts (e.g., "Roboto", "Open Sans")
+- Supports font stacks (e.g., "Helvetica, Arial, sans-serif")
+- Supports system fonts (e.g., -apple-system, BlinkMacSystemFont)
+
+**Common Dropdown Fonts:**
+- Arial, Helvetica, Times New Roman, Courier, Courier New
+- Verdana, Georgia, Comic Sans MS, Trebuchet MS, Impact
+- monospace, sans-serif, serif
 
 ### Background
 

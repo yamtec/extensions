@@ -68,12 +68,19 @@ set tooltip position mode to [follow cursor]
 ### Styling - Font & Text
 
 #### `set tooltip font to [FONT]`
-Set the font family. Dropdown includes: Arial, Helvetica, Times New Roman, Courier, Verdana, Georgia, Comic Sans MS, and more.
+Set the font family. The dropdown provides common fonts, but you can also **type any CSS font-family value** directly into the input field.
 
-**Example:**
+**Common fonts in dropdown:** Arial, Helvetica, Times New Roman, Courier, Verdana, Georgia, Comic Sans MS, and more.
+
+**Examples:**
 ```
 set tooltip font to [Courier New]
+set tooltip font to [Roboto]
+set tooltip font to [Comic Sans MS, cursive]
+set tooltip font to ["Segoe UI", Tahoma, sans-serif]
 ```
+
+**Tip:** You can use any valid CSS font-family, including web fonts, system fonts, or font stacks with fallbacks.
 
 #### `set tooltip font size to [SIZE]`
 Set the font size in pixels. Default: 14.
@@ -428,6 +435,21 @@ set tooltip max width to [350]px
 show tooltip [*Elegantly styled tooltip with custom settings*] at x: [0] y: [0]
 ```
 
+### Example 8: Using Custom Web Fonts
+```
+When green flag clicked
+// Click on the font field and type ANY CSS font name!
+set tooltip font to [Roboto]
+// Or use font stacks with fallbacks:
+set tooltip font to [Helvetica, Arial, sans-serif]
+// Or use system UI fonts:
+set tooltip font to [-apple-system, BlinkMacSystemFont, "Segoe UI"]
+show tooltip [**Custom Font Example**
+This tooltip uses a web font!] at x: [0] y: [0]
+```
+
+**Tip:** While the dropdown shows common fonts, you can type any CSS font-family value directly into the font field!
+
 ## Technical Details
 
 - **Extension ID:** `tooltips`
@@ -471,6 +493,7 @@ Works in all modern browsers that support TurboWarp:
 5. **Test color combinations**: Ensure text is readable against the background
 6. **Consider tooltip width**: Set max-width appropriately for your content
 7. **Use cursor offset**: Add offset when following cursor to prevent blocking the pointer
+8. **Custom fonts**: Click on the font field and type any CSS font-family - not limited to dropdown options!
 
 ## Troubleshooting
 
