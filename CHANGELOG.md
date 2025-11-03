@@ -5,6 +5,30 @@ All notable changes to the TurboWarp Extensions will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-01-21
+
+### Fixed - Tooltips Extension
+- **Universal Image Source Support**: Fixed bug where images could only be loaded from web URLs (HTTP/HTTPS)
+  - Now supports **data URLs** (base64 encoded images) - embed images directly in tooltips
+  - Now supports **blob URLs** (from FileReader, Canvas, etc.) - use dynamically generated images
+  - Now supports **Scratch costume names** - reference any costume from any sprite by name
+  - Now supports **relative URLs** - use relative paths for local development
+  - Added `processImageSource()` helper function that intelligently handles all source types
+  - Images can now truly be loaded "from everywhere" as intended
+
+### Added - Tooltips Extension
+- **Scratch Costume Integration**:
+  - Automatically searches all sprites for matching costume names
+  - Case-insensitive matching for easier use
+  - Converts costumes to data URLs for universal compatibility
+  - Example: `![Avatar](costume1)` or `{img:my-costume}`
+- **Documentation Updates**:
+  - Added comprehensive "Supported Image Sources" section to IMAGE-SUPPORT.md
+  - New examples demonstrating Scratch costume usage (Example 8)
+  - New examples for data URL images (Example 9)
+  - Updated troubleshooting guide with source-specific tips
+  - Added best practices for using different image source types
+
 ## [1.2.0] - 2024-01-20
 
 ### Added - Tooltips Extension

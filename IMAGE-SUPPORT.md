@@ -155,6 +155,26 @@ show tooltip [# Hero Profile
 **Status:** Online {img:https://example.com/online.png}] at x: [0] y: [0]
 ```
 
+### Example 8: Using Scratch Costumes
+```scratch
+When sprite clicked
+set tooltip image max width to [100]px
+set tooltip inline image size to [20]px
+show tooltip [# Sprite Info
+
+![Preview](costume1)
+
+Using costume: **costume1**
+Status: {img:costume2} Ready!] at x: [0] y: [0]
+```
+
+### Example 9: Data URL Images (Base64)
+```scratch
+When green flag clicked
+set variable [base64image] to [data:image/png;base64,iVBORw0KG...]
+show tooltip [![Embedded](join(base64image)())] at x: [0] y: [0]
+```
+
 ## Technical Details
 
 ### Block Image Rendering
@@ -184,10 +204,47 @@ show tooltip [# Hero Profile
 - WebP
 - Any format supported by the `<img>` tag
 
+### Supported Image Sources
+The extension now supports multiple image source types:
+
+1. **Web URLs** - Standard HTTP/HTTPS URLs
+   ```
+   ![Image](https://example.com/image.png)
+   {img:https://example.com/icon.png}
+   ```
+
+2. **Data URLs** - Base64 encoded images
+   ```
+   ![Image](data:image/png;base64,iVBORw0KGg...)
+   {img:data:image/png;base64,iVBORw0KGg...}
+   ```
+
+3. **Blob URLs** - From FileReader or Canvas
+   ```
+   ![Image](blob:http://localhost/...)
+   {img:blob:http://localhost/...}
+   ```
+
+4. **Scratch Costume Names** - Reference costumes from any sprite
+   ```
+   ![Avatar](costume1)
+   {img:my-sprite-costume}
+   ```
+   - Automatically searches all sprites for matching costume names
+   - Case-insensitive matching
+   - Converts costume to data URL automatically
+
+5. **Relative URLs** - Relative paths (browser-dependent)
+   ```
+   ![Image](./images/photo.png)
+   {img:../assets/icon.png}
+   ```
+
 ### Image Loading
 - Images load asynchronously
 - Tooltip displays immediately; images appear when loaded
 - Failed image loads show broken image icon
+- Scratch costumes are converted to data URLs for universal compatibility
 
 ## Best Practices
 
@@ -209,6 +266,8 @@ show tooltip [# Hero Profile
 11. **Optimize images** - Use compressed/optimized images for better performance
 12. **Fallback content** - Include text content alongside images
 13. **Mix types** - Combine block and inline images for rich tooltips
+14. **Use Scratch costumes** - For portability, reference costume names instead of external URLs
+15. **Data URLs for embedding** - Use data URLs to embed images directly in your project (no external dependencies)
 
 ## Troubleshooting
 
@@ -217,6 +276,9 @@ show tooltip [# Hero Profile
 - Check browser console for CORS errors
 - Ensure the image format is supported
 - Try using a direct image URL (ending in .png, .jpg, etc.)
+- For Scratch costumes: verify the costume name matches exactly (case-insensitive)
+- For data URLs: ensure the data URL is properly formatted and not truncated
+- For blob URLs: ensure the blob is still valid (not revoked)
 
 **Images too large:**
 - Use `set tooltip image max width to [pixels]px` to constrain size
@@ -285,4 +347,5 @@ Hello {img:wave.png} how are you {img:smile.png}?
 
 ## Version History
 
+- **v1.3.0** - Added support for multiple image sources: data URLs, blob URLs, Scratch costume names, and relative paths. Images can now be loaded from anywhere, not just web URLs.
 - **v1.2.0** - Added block and inline image support with markdown and custom syntax, clickable images, and image styling blocks

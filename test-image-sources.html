@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Source Support Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #9966ff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .test-section {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .code {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .feature {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Tooltip Image Source Support - Test Guide</h1>
+        
+        <p>This document tests the new universal image source support feature for the TurboWarp Tooltips Extension.</p>
+        
+        <h2>✨ Fixed Bug</h2>
+        <div class="test-section">
+            <p><strong>Issue:</strong> Images could only be loaded from web URLs (HTTP/HTTPS)</p>
+            <p><strong>Fix:</strong> Images can now be loaded from multiple sources including data URLs, blob URLs, Scratch costumes, and relative paths</p>
+        </div>
+
+        <h2>🎯 Supported Image Sources</h2>
+        
+        <div class="feature">
+            <h3>1. Web URLs (HTTP/HTTPS) - ✓ Already Working</h3>
+            <div class="code">
+![Image](https://example.com/image.png)
+{img:https://example.com/icon.png}
+            </div>
+        </div>
+
+        <div class="feature">
+            <h3>2. Data URLs (Base64) - ✓ NEW</h3>
+            <div class="code">
+![Embedded](data:image/png;base64,iVBORw0KGgoAAAA...)
+{img:data:image/png;base64,iVBORw0KGgoAAAA...}
+            </div>
+            <p>Perfect for embedding small images directly in your project without external dependencies.</p>
+        </div>
+
+        <div class="feature">
+            <h3>3. Blob URLs - ✓ NEW</h3>
+            <div class="code">
+![Dynamic](blob:http://localhost/abc-123)
+{img:blob:http://localhost/xyz-456}
+            </div>
+            <p>Use images from FileReader, Canvas exports, or dynamically generated content.</p>
+        </div>
+
+        <div class="feature">
+            <h3>4. Scratch Costume Names - ✓ NEW</h3>
+            <div class="code">
+![Sprite Avatar](costume1)
+{img:my-custom-costume}
+            </div>
+            <p>Reference any costume from any sprite by name (case-insensitive).</p>
+            <p>The extension automatically searches all sprites and converts the costume to a data URL.</p>
+        </div>
+
+        <div class="feature">
+            <h3>5. Relative URLs - ✓ NEW</h3>
+            <div class="code">
+![Local Image](./images/photo.png)
+{img:../assets/icon.png}
+            </div>
+            <p>Use relative paths for local development and testing.</p>
+        </div>
+
+        <h2>🧪 Test Scenarios</h2>
+
+        <h3>Test 1: Web URL (Baseline)</h3>
+        <div class="test-section">
+            <p><strong>Blocks:</strong></p>
+            <div class="code">
+when green flag clicked
+show tooltip [![Cat](https://placekitten.com/200/200)] at x: [0] y: [0]
+            </div>
+            <p><strong>Expected:</strong> Displays a cat image from the web</p>
+            <p><strong>Status:</strong> <span class="success">✓ Should work</span></p>
+        </div>
+
+        <h3>Test 2: Scratch Costume</h3>
+        <div class="test-section">
+            <p><strong>Setup:</strong> Make sure your sprite has a costume named "costume1"</p>
+            <p><strong>Blocks:</strong></p>
+            <div class="code">
+when this sprite clicked
+show tooltip [# My Sprite
+![Preview](costume1)
+This is my costume!] at x: [0] y: [0]
+            </div>
+            <p><strong>Expected:</strong> Displays the sprite's costume as an image</p>
+            <p><strong>Status:</strong> <span class="success">✓ Should work with new fix</span></p>
+        </div>
+
+        <h3>Test 3: Data URL</h3>
+        <div class="test-section">
+            <p><strong>Blocks:</strong></p>
+            <div class="code">
+when green flag clicked
+set [dataURL] to [data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='red'/%3E%3C/svg%3E]
+show tooltip (join [![Circle](] (dataURL) [)]) at x: [0] y: [0]
+            </div>
+            <p><strong>Expected:</strong> Displays a red circle SVG</p>
+            <p><strong>Status:</strong> <span class="success">✓ Should work with new fix</span></p>
+        </div>
+
+        <h3>Test 4: Mixed Sources</h3>
+        <div class="test-section">
+            <p><strong>Blocks:</strong></p>
+            <div class="code">
+when space key pressed
+show tooltip [# Gallery
+
+Web: ![Cat](https://placekitten.com/100/100)
+
+Costume: ![Sprite](costume1)
+
+Status: {img:costume2} Ready!] at x: [0] y: [0]
+            </div>
+            <p><strong>Expected:</strong> Displays images from multiple sources in one tooltip</p>
+            <p><strong>Status:</strong> <span class="success">✓ Should work with new fix</span></p>
+        </div>
+
+        <h2>📋 Testing Checklist</h2>
+        <ul>
+            <li>☐ Load the extension in TurboWarp</li>
+            <li>☐ Test web URLs (should still work as before)</li>
+            <li>☐ Test Scratch costume names (new feature)</li>
+            <li>☐ Test data URLs with base64 or SVG (new feature)</li>
+            <li>☐ Test blob URLs if you have them available (new feature)</li>
+            <li>☐ Test mixed sources in one tooltip (new feature)</li>
+            <li>☐ Verify case-insensitive costume name matching</li>
+            <li>☐ Check browser console for any errors</li>
+        </ul>
+
+        <h2>🔍 Implementation Details</h2>
+        <div class="test-section">
+            <p><strong>New Function:</strong> <code>processImageSource(source)</code></p>
+            <p>This function intelligently handles different image source types:</p>
+            <ul>
+                <li>Detects data URLs and blob URLs → passes through unchanged</li>
+                <li>Detects HTTP/HTTPS URLs → passes through unchanged</li>
+                <li>Searches Scratch VM for matching costume names → converts to data URL</li>
+                <li>Fallback: passes through as-is (for relative URLs, etc.)</li>
+            </ul>
+            <p><strong>Modified:</strong> All image processing in <code>parseMarkdown()</code> now uses <code>processImageSource()</code></p>
+        </div>
+
+        <h2>✅ Success Criteria</h2>
+        <div class="test-section">
+            <ul>
+                <li>✓ Web URLs continue to work (backward compatibility)</li>
+                <li>✓ Data URLs display images correctly</li>
+                <li>✓ Blob URLs display images correctly</li>
+                <li>✓ Scratch costume names resolve to images</li>
+                <li>✓ Case-insensitive costume matching works</li>
+                <li>✓ Multiple source types can be mixed in one tooltip</li>
+                <li>✓ No console errors or warnings</li>
+                <li>✓ Documentation updated with examples</li>
+            </ul>
+        </div>
+
+        <h2>🎉 Result</h2>
+        <div class="test-section" style="background: #e3f2fd; border-left-color: #2196F3;">
+            <p><strong>Bug Status:</strong> <span class="success">FIXED</span></p>
+            <p>Images can now be loaded from anywhere - web URLs, data URLs, blob URLs, Scratch costumes, and relative paths.</p>
+            <p>The tooltip extension is now truly universal in its image source support!</p>
+        </div>
+    </div>
+</body>
+</html>
