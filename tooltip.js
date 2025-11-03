@@ -149,6 +149,46 @@
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
+    processImageSource(source) {
+      // This function handles various image source types and converts them to usable URLs
+      
+      // Already a data URL or blob URL - use directly
+      if (source.startsWith('data:') || source.startsWith('blob:')) {
+        return source;
+      }
+      
+      // HTTP/HTTPS URL - use directly
+      if (source.startsWith('http://') || source.startsWith('https://')) {
+        return source;
+      }
+      
+      // Try to get costume from Scratch VM
+      if (runtime && runtime.targets) {
+        // Check all targets for matching costume name
+        for (const target of runtime.targets) {
+          if (target.sprite && target.sprite.costumes) {
+            const costume = target.sprite.costumes.find(c => 
+              c.name === source || c.name.toLowerCase() === source.toLowerCase()
+            );
+            
+            if (costume && costume.asset) {
+              try {
+                // Get the costume data as a data URL
+                const imageData = costume.asset.encodeDataURI();
+                return imageData;
+              } catch (e) {
+                console.warn(`Failed to load costume "${source}":`, e);
+              }
+            }
+          }
+        }
+      }
+      
+      // Try as a relative or absolute path URL (let the browser handle it)
+      // This includes file:// URLs and relative paths
+      return source;
+    }
+
     parseMarkdown(text) {
       // Convert markdown to HTML
       let html = String(text);
@@ -161,7 +201,8 @@
       // Process inline images: {img:url} or {img:url:alt}
       html = html.replace(/\{img:([^:}]+)(?::([^}]*))?\}/g, (match, url, alt) => {
         const altText = alt || 'inline image';
-        return `<img src="${url}" alt="${altText}" title="${altText}" class="tooltip-inline-image" />`;
+        const processedUrl = this.processImageSource(url);
+        return `<img src="${processedUrl}" alt="${altText}" title="${altText}" class="tooltip-inline-image" />`;
       });
       
       // Headers
@@ -186,10 +227,16 @@
       
       // Images - must be before links to handle [![alt](image)](link) syntax
       // Image with link: [![alt](image)](link)
-      html = html.replace(/\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/g, '<a href="$3" target="_blank" rel="noopener noreferrer"><img src="$2" alt="$1" title="$1" class="tooltip-linked-image" /></a>');
+      html = html.replace(/\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/g, (match, alt, imageUrl, linkUrl) => {
+        const processedImageUrl = this.processImageSource(imageUrl);
+        return `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer"><img src="${processedImageUrl}" alt="${alt}" title="${alt}" class="tooltip-linked-image" /></a>`;
+      });
       
       // Regular image: ![alt](url)
-      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" title="$1" class="tooltip-image" />');
+      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+        const processedUrl = this.processImageSource(url);
+        return `<img src="${processedUrl}" alt="${alt}" title="${alt}" class="tooltip-image" />`;
+      });
       
       // Links - make them clickable
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
