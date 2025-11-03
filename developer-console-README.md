@@ -1,22 +1,4 @@
-# TurboWarp Extensions
-
-This repository contains custom TurboWarp extensions for enhancing your Scratch projects.
-
-## Extensions
-
-### 1. Developer Console Extension
-A customizable in-stage developer console overlay for TurboWarp, similar to Minecraft's console. This extension allows developers to register custom commands and fully customize the console appearance.
-
-**[📖 Read Developer Console Documentation](developer-console-README.md)**
-
-### 2. Tooltips Extension
-A comprehensive tooltip system with markdown support, advanced styling, and positioning options. Display beautiful, interactive tooltips with custom formatting, colors, and animations.
-
-**[📖 Read Tooltips Documentation](tooltip-README.md)**
-
----
-
-## Developer Console Extension
+# TurboWarp Developer Console Extension
 
 A customizable in-stage developer console overlay for TurboWarp, similar to Minecraft's console. This extension allows developers to register custom commands and fully customize the console appearance.
 

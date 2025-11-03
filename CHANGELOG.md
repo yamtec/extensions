@@ -1,9 +1,58 @@
 # Changelog
 
-All notable changes to the TurboWarp Developer Console Extension will be documented in this file.
+All notable changes to the TurboWarp Extensions will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2024-01-15
+
+### Added - Tooltips Extension
+- **New Extension**: TurboWarp Tooltips Extension with comprehensive tooltip system
+- **Display & Positioning**:
+  - Fixed position tooltips at stage coordinates
+  - Cursor-following tooltips
+  - Cursor-following with custom offset
+  - Smart viewport-aware positioning
+  - Toggle between fixed and follow cursor modes
+- **Markdown Support**:
+  - Headers (H1, H2, H3)
+  - Bold, italic, strikethrough formatting
+  - Inline code and code blocks
+  - Bullet lists and numbered lists
+  - Clickable links (open in new tab)
+  - Custom color syntax: `{color:name}text{/color}` and `{color:#hex}text{/color}`
+- **Extensive Styling Options**:
+  - 13+ font family options (Arial, Courier, Georgia, etc.)
+  - Font size control
+  - Text color with color picker
+  - Background color with opacity control (0-100%)
+  - Border color, width, and radius
+  - Padding and sizing (width, max-width)
+  - Shadow effects with custom x, y, blur, and color
+  - Z-index layering control
+- **Behavior & Animation**:
+  - Optional auto-hide with customizable duration
+  - Fade in/out animations
+  - Configurable fade duration
+  - Individual fade in/out enable/disable
+- **Reporter Blocks**:
+  - `tooltip visible?` - Check if tooltip is shown
+  - `tooltip text` - Get current text content
+  - `tooltip x position` - Get x coordinate
+  - `tooltip y position` - Get y coordinate
+  - `tooltip mode` - Get positioning mode
+- **Performance Optimizations**:
+  - Debounced cursor following (~60fps)
+  - Efficient markdown parsing
+  - Minimal DOM updates
+  - Proper event listener cleanup
+- **Documentation**:
+  - Comprehensive tooltip-README.md with full API reference
+  - Interactive tooltip-test.html demonstration page
+  - 7+ detailed usage examples
+  - Markdown syntax reference
+  - Troubleshooting guide
 
 ## [1.0.0] - 2024-01-01
 
