@@ -44,7 +44,10 @@
         shadowY: 2,
         shadowBlur: 4,
         shadowColor: '#000000',
-        zIndex: 10000
+        zIndex: 10000,
+        imageMaxWidth: 0, // 0 = auto, max width for images
+        imageMaxHeight: 0, // 0 = auto, max height for images
+        imageBorderRadius: 4
       };
       
       // Behavior properties
@@ -174,6 +177,13 @@
       // Strikethrough
       html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
       
+      // Images - must be before links to handle [![alt](image)](link) syntax
+      // Image with link: [![alt](image)](link)
+      html = html.replace(/\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/g, '<a href="$3" target="_blank" rel="noopener noreferrer"><img src="$2" alt="$1" title="$1" class="tooltip-linked-image" /></a>');
+      
+      // Regular image: ![alt](url)
+      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" title="$1" class="tooltip-image" />');
+      
       // Links - make them clickable
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
       
@@ -289,6 +299,27 @@
       lists.forEach(list => {
         list.style.margin = '8px 0';
         list.style.paddingLeft = '20px';
+      });
+      
+      // Style images
+      const images = content.querySelectorAll('img');
+      images.forEach(img => {
+        img.style.display = 'block';
+        img.style.margin = '8px auto';
+        img.style.borderRadius = `${this.styling.imageBorderRadius}px`;
+        
+        if (this.styling.imageMaxWidth > 0) {
+          img.style.maxWidth = `${this.styling.imageMaxWidth}px`;
+        } else {
+          img.style.maxWidth = '100%';
+        }
+        
+        if (this.styling.imageMaxHeight > 0) {
+          img.style.maxHeight = `${this.styling.imageMaxHeight}px`;
+        }
+        
+        img.style.height = 'auto';
+        img.style.objectFit = 'contain';
       });
     }
 
@@ -556,6 +587,21 @@
       this.updateTooltipStyles();
     }
 
+    setImageMaxWidth(args) {
+      this.styling.imageMaxWidth = Math.max(0, Number(args.WIDTH));
+      this.renderTooltip();
+    }
+
+    setImageMaxHeight(args) {
+      this.styling.imageMaxHeight = Math.max(0, Number(args.HEIGHT));
+      this.renderTooltip();
+    }
+
+    setImageBorderRadius(args) {
+      this.styling.imageBorderRadius = Math.max(0, Number(args.RADIUS));
+      this.renderTooltip();
+    }
+
     // Reporter blocks
     isVisible() {
       return this.isVisible;
@@ -794,6 +840,44 @@
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 300
+              }
+            }
+          },
+
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Styling - Images'
+          },
+          {
+            opcode: 'setImageMaxWidth',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set tooltip image max width to [WIDTH]px',
+            arguments: {
+              WIDTH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              }
+            }
+          },
+          {
+            opcode: 'setImageMaxHeight',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set tooltip image max height to [HEIGHT]px',
+            arguments: {
+              HEIGHT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              }
+            }
+          },
+          {
+            opcode: 'setImageBorderRadius',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set tooltip image border radius to [RADIUS]px',
+            arguments: {
+              RADIUS: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 4
               }
             }
           },

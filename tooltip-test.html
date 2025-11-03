@@ -132,6 +132,7 @@
                     <li>Bold, italic, strikethrough</li>
                     <li>Code blocks & inline</li>
                     <li>Lists & links</li>
+                    <li>Images & clickable images</li>
                 </ul>
             </div>
             <div class="feature-card">
@@ -180,6 +181,13 @@
             <button class="test-button" onclick="testColorSyntax()">Named Colors</button>
             <button class="test-button" onclick="testColorHex()">Hex Colors</button>
             <button class="test-button" onclick="testColorMixed()">Mixed Formatting</button>
+        </div>
+
+        <div class="example">
+            <h3>Images</h3>
+            <button class="test-button" onclick="testImageBasic()">Basic Image</button>
+            <button class="test-button" onclick="testImageWithText()">Image with Text</button>
+            <button class="test-button" onclick="testImageWithLink()">Clickable Image</button>
         </div>
 
         <div class="example">
@@ -232,6 +240,27 @@ set tooltip background color to [#8e44ad]
 set tooltip border radius to [15]px
 show tooltip [*Styled tooltip*] at x: [0] y: [0]</code></pre>
         </div>
+
+        <div class="example">
+            <h3>Example 5: Image with Text</h3>
+            <pre><code>set tooltip image max width to [150]px
+show tooltip [# Character Info
+
+![Avatar](https://example.com/avatar.png)
+
+**Name:** Hero
+**Level:** 25] at x: [0] y: [0]</code></pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 6: Clickable Image</h3>
+            <pre><code>set tooltip image border radius to [10]px
+show tooltip [## Visit Us!
+
+[![Logo](https://example.com/logo.png)](https://example.com)
+
+*Click to visit*] at x: [0] y: [0]</code></pre>
+        </div>
     </div>
 
     <div class="section">
@@ -281,6 +310,15 @@ show tooltip [*Styled tooltip*] at x: [0] y: [0]</code></pre>
                     <li>set padding to [px]</li>
                     <li>set width to [px]</li>
                     <li>set max width to [px]</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Images</h3>
+                <ul style="font-size: 12px;">
+                    <li>set image max width to [px]</li>
+                    <li>set image max height to [px]</li>
+                    <li>set image border radius to [px]</li>
                 </ul>
             </div>
             
@@ -472,6 +510,34 @@ show tooltip [*Styled tooltip*] at x: [0] y: [0]</code></pre>
         function testColorMixed() {
             tooltipExtension.showTooltipAtPosition({
                 TEXT: '{color:gold}**LEGENDARY ITEM**{/color}\n\n{color:cyan}Sword of Power{/color}\n\n+50 Attack',
+                X: 0,
+                Y: 0
+            });
+        }
+
+        function testImageBasic() {
+            tooltipExtension.setImageMaxWidth({ WIDTH: 150 });
+            tooltipExtension.showTooltipAtPosition({
+                TEXT: '# Image Example\n\n![Scratch Cat](https://scratch.mit.edu/images/logo_sm.png)\n\n*The Scratch logo*',
+                X: 0,
+                Y: 0
+            });
+        }
+
+        function testImageWithText() {
+            tooltipExtension.setImageMaxWidth({ WIDTH: 120 });
+            tooltipExtension.showTooltipAtPosition({
+                TEXT: '## Character Profile\n\n![Avatar](https://via.placeholder.com/100)\n\n**Name:** Hero\n**Level:** 25\n**HP:** 100/100',
+                X: 0,
+                Y: 50
+            });
+        }
+
+        function testImageWithLink() {
+            tooltipExtension.setImageMaxWidth({ WIDTH: 200 });
+            tooltipExtension.setImageBorderRadius({ RADIUS: 10 });
+            tooltipExtension.showTooltipAtPosition({
+                TEXT: '## Click the Image!\n\n[![Logo](https://scratch.mit.edu/images/logo_sm.png)](https://scratch.mit.edu)\n\n*Click to visit Scratch*',
                 X: 0,
                 Y: 0
             });

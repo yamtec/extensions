@@ -5,6 +5,29 @@ All notable changes to the TurboWarp Extensions will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-01-20
+
+### Added - Tooltips Extension
+- **Image Support**:
+  - Display images inline using markdown syntax: `![alt text](image_url)`
+  - Clickable images with links: `[![alt](image.png)](link.com)`
+  - Images open in new tab when clicked (if wrapped in link)
+  - Native HTML tooltip shows alt text on hover
+- **Image Styling Blocks**:
+  - `set tooltip image max width to [WIDTH]px` - Control maximum image width (0 = auto)
+  - `set tooltip image max height to [HEIGHT]px` - Control maximum image height (0 = auto)
+  - `set tooltip image border radius to [RADIUS]px` - Rounded corners for images (default: 4px)
+- **Image Features**:
+  - Images maintain aspect ratio automatically
+  - Centered display with proper margins
+  - Support for all standard image formats (PNG, JPG, GIF, SVG, etc.)
+  - Images scale responsively within tooltip constraints
+- **Documentation Updates**:
+  - Added image syntax examples to tooltip-README.md
+  - 3 new usage examples showcasing images (Examples 9-11)
+  - Troubleshooting section for image-related issues
+  - Updated Tips & Best Practices with image guidance
+
 ## [1.1.0] - 2024-01-15
 
 ### Added - Tooltips Extension
