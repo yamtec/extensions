@@ -199,7 +199,8 @@
       });
       
       // Process inline images: {img:url} or {img:url:alt}
-      html = html.replace(/\{img:([^:}]+)(?::([^}]*))?\}/g, (match, url, alt) => {
+      // Alt text cannot contain : or / to distinguish it from URL schemes and paths
+      html = html.replace(/\{img:(.+?)(?::([^}:/]+))?\}/g, (match, url, alt) => {
         const altText = alt || 'inline image';
         const processedUrl = this.processImageSource(url);
         return `<img src="${processedUrl}" alt="${altText}" title="${altText}" class="tooltip-inline-image" />`;
