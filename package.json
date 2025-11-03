@@ -1,0 +1,47 @@
+{
+  "name": "turbowarp-developer-console",
+  "version": "1.0.0",
+  "description": "A customizable in-stage developer console overlay for TurboWarp with command registration and autocomplete",
+  "main": "developer-console.js",
+  "scripts": {
+    "test": "node -c developer-console.js",
+    "check": "node -c developer-console.js && echo 'Syntax check passed!'"
+  },
+  "keywords": [
+    "turbowarp",
+    "scratch",
+    "extension",
+    "console",
+    "developer-tools",
+    "debugging",
+    "commands",
+    "autocomplete"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "turbowarp": {
+    "extension": {
+      "id": "developerConsole",
+      "name": "Developer Console",
+      "description": "Provides a customizable in-stage developer console overlay",
+      "unsandboxed": true,
+      "features": [
+        "Console toggle with ~ key",
+        "Command registration system",
+        "Autocomplete with prefix matching",
+        "Command history navigation",
+        "Fully customizable styling",
+        "Output and error display",
+        "Hat blocks for lifecycle events"
+      ]
+    }
+  }
+}
