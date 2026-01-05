@@ -16,6 +16,7 @@
     constructor() {
       this.tooltipElement = null;
       this.tooltipContentElement = null;
+      this.closeButtonElement = null;
       this.isVisible = false;
       this.currentText = '';
       this.currentX = 0;
@@ -25,6 +26,10 @@
       this.cursorOffsetY = 0;
       this.mouseMoveListener = null;
       this.autoHideTimeout = null;
+      
+      // Mobile properties
+      this.mobileMode = false;
+      this.mobileTargetElements = new Map(); // Map of element -> {text, listener}
       
       // Styling properties
       this.styling = {
@@ -75,11 +80,57 @@
       const content = document.createElement('div');
       content.className = 'turbowarp-tooltip-content';
       
+      // Create close button for mobile
+      const closeButton = document.createElement('button');
+      closeButton.className = 'turbowarp-tooltip-close';
+      closeButton.innerHTML = '&times;';
+      closeButton.style.position = 'absolute';
+      closeButton.style.top = '4px';
+      closeButton.style.right = '4px';
+      closeButton.style.width = '28px';
+      closeButton.style.height = '28px';
+      closeButton.style.border = 'none';
+      closeButton.style.borderRadius = '4px';
+      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+      closeButton.style.color = '#ffffff';
+      closeButton.style.fontSize = '24px';
+      closeButton.style.fontWeight = 'bold';
+      closeButton.style.lineHeight = '1';
+      closeButton.style.cursor = 'pointer';
+      closeButton.style.padding = '0';
+      closeButton.style.display = 'none';
+      closeButton.style.alignItems = 'center';
+      closeButton.style.justifyContent = 'center';
+      closeButton.style.zIndex = '1';
+      closeButton.style.transition = 'background-color 0.2s';
+      closeButton.setAttribute('aria-label', 'Close tooltip');
+      
+      closeButton.addEventListener('mouseenter', () => {
+        closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+      });
+      
+      closeButton.addEventListener('mouseleave', () => {
+        closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+      });
+      
+      closeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.hideTooltip();
+      });
+      
+      closeButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.hideTooltip();
+      });
+      
+      tooltip.appendChild(closeButton);
       tooltip.appendChild(content);
       document.body.appendChild(tooltip);
       
       this.tooltipElement = tooltip;
       this.tooltipContentElement = content;
+      this.closeButtonElement = closeButton;
       
       this.updateTooltipStyles();
     }
@@ -484,6 +535,13 @@
     displayTooltip() {
       this.cancelAutoHide();
       
+      // Show/hide close button based on mobile mode
+      if (this.mobileMode && this.closeButtonElement) {
+        this.closeButtonElement.style.display = 'flex';
+      } else if (this.closeButtonElement) {
+        this.closeButtonElement.style.display = 'none';
+      }
+      
       if (this.behavior.fadeInEnabled) {
         this.tooltipElement.style.opacity = '0';
         this.tooltipElement.style.display = 'block';
@@ -499,7 +557,8 @@
       
       this.isVisible = true;
       
-      if (this.behavior.autoHideEnabled) {
+      // Don't use auto-hide in mobile mode (only close button should dismiss)
+      if (this.behavior.autoHideEnabled && !this.mobileMode) {
         this.autoHideTimeout = setTimeout(() => {
           this.hideTooltip();
         }, this.behavior.autoHideDuration * 1000);
@@ -534,6 +593,99 @@
 
     setPositionMode(mode) {
       this.positionMode = mode;
+    }
+
+    // Mobile-specific methods
+    enableMobileMode() {
+      this.mobileMode = true;
+    }
+
+    disableMobileMode() {
+      this.mobileMode = false;
+      // Clean up all mobile event listeners
+      this.detachAllMobileTooltips();
+    }
+
+    attachTooltipToElement(selector, text) {
+      if (!this.mobileMode) {
+        console.warn('Mobile mode is not enabled. Enable it first using enableMobileMode()');
+        return;
+      }
+
+      try {
+        const elements = document.querySelectorAll(selector);
+        
+        elements.forEach(element => {
+          // Remove existing listener if any
+          if (this.mobileTargetElements.has(element)) {
+            const existing = this.mobileTargetElements.get(element);
+            element.removeEventListener('touchstart', existing.listener);
+          }
+
+          // Create touch listener
+          const listener = (e) => {
+            e.preventDefault();
+            
+            // Get element position
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Convert screen coordinates to Scratch coordinates
+            const canvas = runtime.renderer?.canvas || document.querySelector('canvas');
+            if (canvas) {
+              const canvasRect = canvas.getBoundingClientRect();
+              const stageWidth = 480;
+              const stageHeight = 360;
+              
+              const scratchX = ((centerX - canvasRect.left - canvasRect.width / 2) / canvasRect.width) * stageWidth;
+              const scratchY = ((canvasRect.height / 2 + canvasRect.top - centerY) / canvasRect.height) * stageHeight;
+              
+              this.showTooltipAt(text, scratchX, scratchY);
+            } else {
+              // Fallback: show at screen coordinates
+              this.currentText = String(text);
+              this.positionMode = 'fixed';
+              this.renderTooltip();
+              this.tooltipElement.style.left = `${centerX}px`;
+              this.tooltipElement.style.top = `${centerY}px`;
+              this.displayTooltip();
+            }
+          };
+
+          element.addEventListener('touchstart', listener, { passive: false });
+          this.mobileTargetElements.set(element, { text, listener });
+        });
+      } catch (error) {
+        console.error('Error attaching tooltip to element:', error);
+      }
+    }
+
+    detachMobileTooltip(selector) {
+      try {
+        const elements = document.querySelectorAll(selector);
+        
+        elements.forEach(element => {
+          if (this.mobileTargetElements.has(element)) {
+            const { listener } = this.mobileTargetElements.get(element);
+            element.removeEventListener('touchstart', listener);
+            this.mobileTargetElements.delete(element);
+          }
+        });
+      } catch (error) {
+        console.error('Error detaching tooltip from element:', error);
+      }
+    }
+
+    detachAllMobileTooltips() {
+      this.mobileTargetElements.forEach(({ listener }, element) => {
+        element.removeEventListener('touchstart', listener);
+      });
+      this.mobileTargetElements.clear();
+    }
+
+    isMobileModeEnabled() {
+      return this.mobileMode;
     }
 
     // Block implementations
@@ -672,6 +824,31 @@
     setInlineImageSize(args) {
       this.styling.inlineImageSize = Math.max(1, Number(args.SIZE));
       this.renderTooltip();
+    }
+
+    // Mobile mode blocks
+    enableMobileModeBlock() {
+      this.enableMobileMode();
+    }
+
+    disableMobileModeBlock() {
+      this.disableMobileMode();
+    }
+
+    attachTooltipToElementBlock(args) {
+      this.attachTooltipToElement(args.SELECTOR, args.TEXT);
+    }
+
+    detachMobileTooltipBlock(args) {
+      this.detachMobileTooltip(args.SELECTOR);
+    }
+
+    detachAllMobileTooltipsBlock() {
+      this.detachAllMobileTooltips();
+    }
+
+    isMobileModeEnabledBlock() {
+      return this.isMobileModeEnabled();
     }
 
     // Reporter blocks
@@ -1077,6 +1254,57 @@
                 defaultValue: 'enabled'
               }
             }
+          },
+
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Mobile Mode'
+          },
+          {
+            opcode: 'enableMobileModeBlock',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'enable mobile mode'
+          },
+          {
+            opcode: 'disableMobileModeBlock',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'disable mobile mode'
+          },
+          {
+            opcode: 'attachTooltipToElementBlock',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'attach tooltip [TEXT] to element [SELECTOR]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Tap me!'
+              },
+              SELECTOR: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '.my-element'
+              }
+            }
+          },
+          {
+            opcode: 'detachMobileTooltipBlock',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'detach tooltip from element [SELECTOR]',
+            arguments: {
+              SELECTOR: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '.my-element'
+              }
+            }
+          },
+          {
+            opcode: 'detachAllMobileTooltipsBlock',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'detach all mobile tooltips'
+          },
+          {
+            opcode: 'isMobileModeEnabledBlock',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'mobile mode enabled?'
           },
 
           {

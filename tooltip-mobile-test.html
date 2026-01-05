@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip Mobile Mode Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .test-button:hover {
+            background: #45a049;
+        }
+        
+        .tap-target {
+            display: inline-block;
+            padding: 20px 40px;
+            margin: 10px;
+            background: #2196F3;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+        }
+        
+        .info-box {
+            padding: 15px;
+            margin: 10px 0;
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+        
+        .canvas-container {
+            width: 100%;
+            height: 400px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        canvas {
+            background: white;
+            border: 2px solid #333;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .status.enabled {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .status.disabled {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Tooltip Mobile Mode Test</h1>
+    
+    <div class="info-box">
+        <strong>Info:</strong> This page tests the mobile-specific tooltip interactions. 
+        The tooltips should appear on tap (not hover) and be dismissed only by the close button when mobile mode is enabled.
+    </div>
+    
+    <div class="test-section">
+        <h2>Mobile Mode Control</h2>
+        <button class="test-button" onclick="enableMobileMode()">Enable Mobile Mode</button>
+        <button class="test-button" onclick="disableMobileMode()">Disable Mobile Mode</button>
+        <div id="mobileStatus" class="status disabled">Mobile Mode: DISABLED</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 1: Basic Mobile Tooltip</h2>
+        <p>Enable mobile mode and tap the box below. A tooltip with a close button should appear.</p>
+        <div class="tap-target" id="tapTarget1">Tap Me!</div>
+        <button class="test-button" onclick="attachTooltip1()">Attach Tooltip</button>
+        <button class="test-button" onclick="detachTooltip1()">Detach Tooltip</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Multiple Tooltips</h2>
+        <p>Test multiple elements with different tooltips:</p>
+        <div class="tap-target" id="tapTarget2">Element 1</div>
+        <div class="tap-target" id="tapTarget3">Element 2</div>
+        <button class="test-button" onclick="attachMultipleTooltips()">Attach All</button>
+        <button class="test-button" onclick="detachAllTooltips()">Detach All</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Styled Tooltip with Markdown</h2>
+        <p>Test tooltip with markdown formatting:</p>
+        <div class="tap-target" id="tapTarget4">Rich Content</div>
+        <button class="test-button" onclick="attachStyledTooltip()">Attach Styled Tooltip</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 4: Close Button Functionality</h2>
+        <div class="info-box">
+            <strong>Test:</strong> When a tooltip appears, verify:
+            <ul>
+                <li>Close button (×) is visible in the top-right corner</li>
+                <li>Close button has hover effect (becomes brighter)</li>
+                <li>Clicking/tapping close button hides the tooltip</li>
+                <li>No other dismiss mechanics work (tap outside, timeout, etc.)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5: Desktop vs Mobile Mode</h2>
+        <p>Disable mobile mode and verify hover still works on desktop:</p>
+        <button class="test-button" onclick="showDesktopTooltip()">Show Desktop Tooltip (Hover-style)</button>
+        <button class="test-button" onclick="hideTooltip()">Hide Tooltip</button>
+    </div>
+    
+    <div class="canvas-container">
+        <canvas id="testCanvas" width="480" height="360"></canvas>
+    </div>
+    
+    <script>
+        // Mock Scratch object for testing
+        window.Scratch = {
+            extensions: {
+                unsandboxed: true,
+                register: function(extension) {
+                    window.tooltipExtension = extension;
+                    console.log('Tooltip extension registered:', extension);
+                    updateStatus();
+                }
+            },
+            BlockType: {
+                COMMAND: 'command',
+                REPORTER: 'reporter',
+                BOOLEAN: 'Boolean',
+                LABEL: 'label'
+            },
+            ArgumentType: {
+                STRING: 'string',
+                NUMBER: 'number',
+                COLOR: 'color'
+            },
+            vm: {
+                runtime: {
+                    renderer: {
+                        canvas: document.getElementById('testCanvas')
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <script src="tooltip.js"></script>
+    
+    <script>
+        function updateStatus() {
+            const statusDiv = document.getElementById('mobileStatus');
+            if (window.tooltipExtension && window.tooltipExtension.isMobileModeEnabled()) {
+                statusDiv.className = 'status enabled';
+                statusDiv.textContent = 'Mobile Mode: ENABLED ✓';
+            } else {
+                statusDiv.className = 'status disabled';
+                statusDiv.textContent = 'Mobile Mode: DISABLED ✗';
+            }
+        }
+        
+        function enableMobileMode() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.enableMobileMode();
+                updateStatus();
+                console.log('Mobile mode enabled');
+            }
+        }
+        
+        function disableMobileMode() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.disableMobileMode();
+                updateStatus();
+                console.log('Mobile mode disabled');
+            }
+        }
+        
+        function attachTooltip1() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.attachTooltipToElement(
+                    '#tapTarget1',
+                    'Hello! This is a mobile tooltip. 👋\nTap the × button to close.'
+                );
+                console.log('Tooltip attached to #tapTarget1');
+            }
+        }
+        
+        function detachTooltip1() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.detachMobileTooltip('#tapTarget1');
+                console.log('Tooltip detached from #tapTarget1');
+            }
+        }
+        
+        function attachMultipleTooltips() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.attachTooltipToElement(
+                    '#tapTarget2',
+                    'This is Element 1 🎯'
+                );
+                window.tooltipExtension.attachTooltipToElement(
+                    '#tapTarget3',
+                    'This is Element 2 🎨'
+                );
+                console.log('Multiple tooltips attached');
+            }
+        }
+        
+        function attachStyledTooltip() {
+            if (window.tooltipExtension) {
+                const richContent = `# Styled Tooltip\n\n**Bold text** and *italic text*\n\n- List item 1\n- List item 2\n\n\`code example\``;
+                window.tooltipExtension.attachTooltipToElement(
+                    '#tapTarget4',
+                    richContent
+                );
+                console.log('Styled tooltip attached');
+            }
+        }
+        
+        function detachAllTooltips() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.detachAllMobileTooltips();
+                console.log('All tooltips detached');
+            }
+        }
+        
+        function showDesktopTooltip() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.showTooltipAt(
+                    'Desktop tooltip (hover-style)\nNo close button should appear',
+                    0, 0
+                );
+                console.log('Desktop tooltip shown');
+            }
+        }
+        
+        function hideTooltip() {
+            if (window.tooltipExtension) {
+                window.tooltipExtension.hideTooltip();
+                console.log('Tooltip hidden');
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            console.log('Page loaded, tooltip extension:', window.tooltipExtension);
+            updateStatus();
+        });
+    </script>
+</body>
+</html>

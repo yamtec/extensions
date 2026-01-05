@@ -10,9 +10,10 @@ A customizable in-stage developer console overlay for TurboWarp, similar to Mine
 **[📖 Read Developer Console Documentation](developer-console-README.md)**
 
 ### 2. Tooltips Extension
-A comprehensive tooltip system with markdown support, advanced styling, and positioning options. Display beautiful, interactive tooltips with custom formatting, colors, and animations.
+A comprehensive tooltip system with markdown support, advanced styling, and positioning options. Display beautiful, interactive tooltips with custom formatting, colors, and animations. Now includes **mobile-specific interactions** with tap-to-show and close button dismiss functionality!
 
-**[📖 Read Tooltips Documentation](tooltip-README.md)**
+**[📖 Read Tooltips Documentation](tooltip-README.md)**  
+**[📱 Read Mobile Tooltips Documentation](MOBILE-TOOLTIPS.md)**
 
 ---
 
